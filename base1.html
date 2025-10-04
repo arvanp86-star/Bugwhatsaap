@@ -1,0 +1,468 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>XscorpionS — Bug WhatsApp (Simulasi)</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Montserrat:wght@300;600;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --bg1: #0f0210;
+      --bg2: #2a0730;
+      --neon: #b12cff;
+      --accent: #6f00ff;
+      --glass: rgba(255,255,255,0.03);
+      --input-bg: rgba(0,0,0,0.5);
+      --text: #f7f7fb;
+    }
+    *{box-sizing:border-box; margin:0; padding:0}
+    html,body{height:100%}
+    body{
+      font-family: "Montserrat", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      background: radial-gradient(1200px 400px at 20% 10%, rgba(90,0,160,0.14), transparent 10%),
+                  linear-gradient(180deg, var(--bg1) 0%, var(--bg2) 100%);
+      color:var(--text);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:24px;
+    }
+
+    .app {
+      width:980px;
+      max-width:98vw;
+      display:flex;
+      gap:22px;
+      align-items:flex-start;
+      justify-content:center;
+    }
+
+    /* LOGIN CARD */
+    .card{
+      width:360px;
+      max-width:92vw;
+      text-align:center;
+      background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(0,0,0,0.06));
+      border-radius:18px;
+      padding:28px 24px;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.6), 0 0 60px rgba(120,0,180,0.08) inset;
+      position:relative;
+      overflow:hidden;
+      border: 1px solid rgba(255,255,255,0.03);
+    }
+
+    .logo-wrap{ width:140px; height:140px; margin:8px auto 18px; border-radius:18px; overflow:hidden; display:flex; align-items:center; justify-content:center; box-shadow: 0 6px 30px rgba(177,44,255,0.14); border: 2px solid rgba(177,44,255,0.06); background: linear-gradient(180deg, rgba(0,0,0,0.5), rgba(20,0,30,0.5)); }
+    .logo-wrap img{ width:120%; height:120%; object-fit:cover; transform:translateY(-3%); filter: drop-shadow(0 6px 18px rgba(177,44,255,0.25)); }
+
+    .brand-script{ font-family: "Bangers", cursive; font-size:52px; line-height:1; color:var(--neon); text-shadow: 0 2px 0 rgba(0,0,0,0.8), 0 6px 20px rgba(177,44,255,0.25), 0 0 10px rgba(120,0,200,0.6); margin-top:6px; position:relative; display:inline-block; }
+
+    .brand-block{ font-weight:800; font-size:44px; letter-spacing:6px; margin:12px 0 6px; color:#fff; font-family: "Montserrat", sans-serif; position:relative; -webkit-text-stroke: 1px rgba(0,0,0,0.5); text-shadow: 0 8px 18px rgba(0,0,0,0.65), 0 0 8px rgba(150,50,255,0.12); filter: drop-shadow(0 8px 18px rgba(120,0,200,0.18)); }
+
+    .version{ color: rgba(255,255,255,0.35); font-size:12px; margin-bottom:18px; }
+
+    .form{ display:flex; flex-direction:column; gap:14px; margin-top:6px; }
+    .input{ background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.35)); border-radius:30px; padding:12px 16px; display:flex; gap:10px; align-items:center; border: 1px solid rgba(120,0,200,0.06); box-shadow: inset 0 2px 6px rgba(0,0,0,0.6); }
+    .input input{ background:transparent; border:0; outline:none; color:var(--text); width:100%; font-size:15px; }
+    .input .icon{ width:20px; height:20px; opacity:0.55; display:inline-flex; align-items:center; justify-content:center; font-size:18px; }
+
+    .btn{ margin-top:6px; background: linear-gradient(90deg, rgba(177,44,255,0.12), rgba(110,0,255,0.06)); border-radius:34px; padding:12px 18px; border: 2px solid rgba(177,44,255,0.28); cursor:pointer; display:flex; align-items:center; justify-content:center; gap:14px; font-weight:700; letter-spacing:6px; color:var(--text); font-size:18px; box-shadow: 0 6px 30px rgba(120,0,200,0.12), inset 0 -2px 8px rgba(0,0,0,0.6); transition:transform .18s ease, opacity .18s ease; }
+    .btn .skull{ display:inline-block; transform:translateY(1px); font-size:20px; filter: drop-shadow(0 6px 12px rgba(120,0,200,0.08)); }
+
+    .secondary{ margin-top:12px; display:inline-block; padding:8px 16px; border-radius:22px; border: 1px solid rgba(177,44,255,0.14); font-weight:600; font-size:14px; background: rgba(0,0,0,0.35); }
+
+    .bottom-line{ height:6px; width:100%; border-radius:6px; margin-top:18px; background: linear-gradient(90deg, transparent, rgba(177,44,255,0.16), transparent); }
+
+    /* ---- bug panel ---- */
+    .panel {
+      flex:1;
+      min-width:520px;
+      max-width:70vw;
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(10,0,20,0.06));
+      border-radius:14px;
+      padding:18px;
+      color:var(--text);
+      box-shadow: 0 10px 60px rgba(0,0,0,0.6);
+      border: 1px solid rgba(120,0,200,0.06);
+      display:none; /* show after login */
+      flex-direction:column;
+      gap:12px;
+    }
+
+    .panel.visible{ display:flex; }
+
+    .panel .header{
+      display:flex;
+      gap:12px;
+      align-items:center;
+      justify-content:space-between;
+    }
+
+    .panel .title {
+      display:flex;
+      gap:12px;
+      align-items:center;
+    }
+    .panel .title img{
+      width:56px;height:56px;border-radius:10px; object-fit:cover; filter: drop-shadow(0 6px 20px rgba(177,44,255,0.12));
+    }
+    .panel h2{ margin:0; font-size:20px; letter-spacing:1px; }
+
+    .panel .actions{ display:flex; gap:8px; align-items:center; }
+
+    .search{
+      background: rgba(255,255,255,0.02);
+      border-radius:10px;
+      padding:8px 10px;
+      border:1px solid rgba(120,0,200,0.06);
+      display:flex;
+      gap:8px;
+      align-items:center;
+      width:240px;
+    }
+    .search input{ background:transparent; border:0; outline:none; color:var(--text); width:100%; }
+
+    .menu-grid{
+      display:grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap:12px;
+      margin-top:8px;
+    }
+
+    .menu-card{
+      background: linear-gradient(180deg, rgba(255,255,255,0.015), rgba(0,0,0,0.28));
+      border-radius:12px;
+      padding:12px;
+      height:120px;
+      display:flex;
+      flex-direction:column;
+      justify-content:space-between;
+      border:1px solid rgba(177,44,255,0.06);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.45);
+      cursor:pointer;
+      transition:transform .14s ease, box-shadow .14s ease;
+    }
+    .menu-card:hover{ transform:translateY(-6px); box-shadow: 0 18px 46px rgba(120,0,200,0.16); }
+
+    .menu-card .label{ font-weight:800; letter-spacing:0.6px; font-size:15px; }
+    .menu-card .meta{ font-size:12px; color:rgba(255,255,255,0.6); }
+
+    /* pill tags */
+    .pill {
+      display:inline-block;
+      padding:6px 8px;
+      border-radius:12px;
+      font-size:12px;
+      background:linear-gradient(90deg, rgba(177,44,255,0.12), rgba(110,0,255,0.06));
+      border:1px solid rgba(177,44,255,0.14);
+      color:var(--text);
+    }
+
+    /* modal */
+    .modal-backdrop{
+      position:fixed; inset:0; display:none; align-items:center; justify-content:center;
+      background:linear-gradient(180deg, rgba(0,0,0,0.55), rgba(0,0,0,0.7));
+      z-index:80;
+    }
+    .modal-backdrop.show{ display:flex; }
+    .modal{
+      width:640px; max-width:94vw; background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.6)); border-radius:10px; padding:18px; border:1px solid rgba(177,44,255,0.08);
+    }
+    .modal h3{ margin:0 0 8px 0; }
+    .modal p{ margin:0 0 12px 0; color:rgba(255,255,255,0.88); }
+
+    .small{ font-size:13px; color:rgba(255,255,255,0.6) }
+
+    .logout{
+      background:transparent; border-radius:10px; padding:8px 12px; border:1px solid rgba(255,255,255,0.06); color:rgba(255,255,255,0.9);
+      cursor:pointer;
+    }
+
+    /* demo result box inside modal */
+    .result-box{
+      margin-top:10px;
+      background: rgba(0,0,0,0.4);
+      padding:10px;
+      border-radius:8px;
+      border:1px solid rgba(120,0,200,0.06);
+      color:rgba(255,255,255,0.9);
+      font-size:13px;
+    }
+
+    @media (max-width:980px){
+      .app{ flex-direction:column; align-items:center; gap:14px; }
+      .panel{ min-width:unset; width:92vw; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <!-- LOGIN CARD -->
+    <div class="card" id="loginCard" aria-labelledby="brand-title">
+      <div class="logo-wrap" aria-hidden="true">
+        <img src="logo.png" alt="Logo XscorpionS" />
+      </div>
+
+      <div class="brand-script" aria-hidden="true">XscorpionS</div>
+
+      <div style="position:relative;">
+        <div id="brand-title" class="brand-block">XSCORPIONS</div>
+
+        <svg class="drip-svg" viewBox="0 0 170 46" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="position:absolute; left:50%; top:100%; transform:translateX(-50%);">
+          <defs><linearGradient id="g" x1="0" x2="1"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#d9c3ff"/></linearGradient></defs>
+          <path d="M0 6 C15 0, 30 12, 44 8 C58 4, 70 14, 84 10 C98 6,110 20,126 14 C140 8,150 18,170 10 L170 46 L0 46 Z" fill="url(#g)" opacity="0.95"></path>
+        </svg>
+      </div>
+
+      <div class="version">2.0 BETA_</div>
+
+      <form class="form" id="loginForm" onsubmit="event.preventDefault()">
+        <label class="input">
+          <span class="icon">👤</span>
+          <input id="username" type="text" name="username" placeholder="Username" autocomplete="username" required>
+        </label>
+
+        <label class="input">
+          <span class="icon">🔒</span>
+          <input id="password" type="password" name="password" placeholder="Password" autocomplete="current-password" required>
+        </label>
+
+        <button class="btn" id="loginBtn" type="submit" title="Login">
+          <span class="skull">☠</span>
+          <span style="letter-spacing:10px">LOGIN</span>
+          <span class="skull">☠</span>
+        </button>
+
+        <div style="display:flex;justify-content:center;">
+          <a class="secondary" href="#" role="button">👁‍🗨 Buy Key Access</a>
+        </div>
+      </form>
+
+      <div class="bottom-line" aria-hidden="true"></div>
+    </div>
+
+    <!-- BUG PANEL (after login) -->
+    <div class="panel" id="bugPanel" aria-hidden="true">
+      <div class="header">
+        <div class="title">
+          <img src="logo.png" alt="Logo small">
+          <div>
+            <h2>Bug WhatsApp — Simulasi</h2>
+            <div class="small">Mode: <strong>Simulasi</strong> · Tema: Neon Purple</div>
+          </div>
+        </div>
+
+        <div class="actions">
+          <div class="search">
+            🔎 <input id="searchInput" placeholder="Cari menu..." />
+          </div>
+          <button class="logout" id="logoutBtn">Logout</button>
+        </div>
+      </div>
+
+      <!-- tag quick filters -->
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <div class="pill" data-filter="all">All</div>
+        <div class="pill" data-filter="viewonce">ViewOnce</div>
+        <div class="pill" data-filter="crash">Crash</div>
+        <div class="pill" data-filter="sticker">Sticker</div>
+        <div class="pill" data-filter="text">Text</div>
+        <div class="pill" data-filter="group">Group</div>
+      </div>
+
+      <!-- menu grid -->
+      <div class="menu-grid" id="menuGrid" aria-live="polite">
+        <!-- cards akan di-inject oleh JS -->
+      </div>
+
+      <div class="small">Tip: Klik salah satu menu untuk melihat simulasi detail. Ini hanya simulasi UI — tidak melakukan tindakan nyata.</div>
+    </div>
+  </div>
+
+  <!-- modal -->
+  <div class="modal-backdrop" id="modalBackdrop" role="dialog" aria-modal="true">
+    <div class="modal" id="modalContent">
+      <h3 id="modalTitle">Judul Menu</h3>
+      <p id="modalBody">Deskripsi simulasi fitur akan muncul di sini.</p>
+
+      <div class="result-box" id="modalResult" style="display:none;"></div>
+
+      <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:12px;">
+        <button class="secondary" id="modalClose">Tutup</button>
+        <button class="btn" id="modalAction">Jalankan</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // === KREDENSIAL DEFAULT ===
+    const VALID_CRED = { username: 'admin', password: '1234' };
+
+    const loginCard = document.getElementById('loginCard');
+    const bugPanel = document.getElementById('bugPanel');
+    const form = document.getElementById('loginForm');
+    const loginBtn = document.getElementById('loginBtn');
+    const usernameInput = document.getElementById('username');
+    const passwordInput = document.getElementById('password');
+    const logoutBtn = document.getElementById('logoutBtn');
+    const searchInput = document.getElementById('searchInput');
+    const menuGrid = document.getElementById('menuGrid');
+
+    // DAFTAR MENU BUG (lebih lengkap)
+    const MENU_ITEMS = [
+      { id:'b1', title:'Bug ViewOnce', meta:'Tampilkan ulang pesan ViewOnce (simulasi)', tag:'viewonce' },
+      { id:'b2', title:'Bug Crash (Message Loop)', meta:'Simulasi crash chat akibat flood' , tag:'crash' },
+      { id:'b3', title:'Bug Sticker Maker', meta:'Buat stiker otomatis dari gambar', tag:'sticker' },
+      { id:'b4', title:'Bug Text Overflow', meta:'Kirim teks panjang dengan efek', tag:'text' },
+      { id:'b5', title:'Bug Mention All', meta:'Simulasi mention semua member grup', tag:'group' },
+      { id:'b6', title:'Bug Clone Profile', meta:'Clone foto profil (simulasi)', tag:'sticker' },
+      { id:'b7', title:'Bug Ghost Sender', meta:'Kirim pesan tampak anonim (simulasi)', tag:'text' },
+      { id:'b8', title:'Bug Fast Delete', meta:'Hapus pesan massal (simulasi)', tag:'group' },
+      { id:'b9', title:'Bug QR Tool', meta:'Scan/generate QR simulasi', tag:'crash' },
+      { id:'b10', title:'Bug View Media', meta:'Preview media tanpa unduh', tag:'viewonce' },
+      { id:'b11', title:'Bug Status Saver', meta:'Simpan status orang lain (simulasi)', tag:'sticker' },
+      { id:'b12', title:'Bug Broadcast Voice', meta:'Kirim voice broadcast (simulasi)', tag:'text' },
+      { id:'b13', title:'Bug Link Scraper', meta:'Ambil link dari chat', tag:'crash' },
+      { id:'b14', title:'Bug Auto Reply', meta:'Balas otomatis template', tag:'text' },
+      { id:'b15', title:'Bug Session Manager', meta:'Simulasi manajemen session', tag:'crash' },
+      { id:'b16', title:'Bug Sticker Pack', meta:'Buat paket stiker otomatis', tag:'sticker' },
+      { id:'b17', title:'Bug Group Tools', meta:'Kelola member & role (simulasi)', tag:'group' },
+      { id:'b18', title:'Bug Media Cleaner', meta:'Bersihkan media lama', tag:'group' },
+      { id:'b19', title:'Bug Stealth Mode', meta:'Sembunyikan status online (simulasi)', tag:'text' },
+      { id:'b20', title:'Bug Analytics', meta:'Lihat statistik chat (simulasi)', tag:'crash' }
+    ];
+
+    // render menu items
+    function renderMenu(items){
+      menuGrid.innerHTML = '';
+      items.forEach(it=>{
+        const c = document.createElement('div');
+        c.className = 'menu-card';
+        c.tabIndex = 0;
+        c.setAttribute('role','button');
+        c.setAttribute('data-id', it.id);
+        c.setAttribute('data-tag', it.tag);
+        c.innerHTML = `
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <div class="label">${it.title}</div>
+            <div style="font-size:20px;opacity:0.95">⚙️</div>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <div class="meta">${it.meta}</div>
+            <div class="pill" style="padding:4px 8px;font-size:11px">${it.tag}</div>
+          </div>
+        `;
+        c.addEventListener('click', ()=> openModal(it));
+        c.addEventListener('keypress', (e)=> { if(e.key === 'Enter') openModal(it); });
+        menuGrid.appendChild(c);
+      });
+    }
+
+    // modal
+    const modalBackdrop = document.getElementById('modalBackdrop');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalBody = document.getElementById('modalBody');
+    const modalResult = document.getElementById('modalResult');
+    const modalClose = document.getElementById('modalClose');
+    const modalAction = document.getElementById('modalAction');
+
+    function openModal(item){
+      modalTitle.innerText = item.title;
+      modalBody.innerText = `${item.meta} — Ini hanya simulasi tampilan fitur untuk menu "${item.title}". Tekan "Jalankan" untuk demo singkat.`;
+      modalResult.style.display = 'none';
+      modalResult.innerText = '';
+      modalAction.disabled = false;
+      modalAction.innerText = 'Jalankan';
+      modalBackdrop.classList.add('show');
+    }
+    function closeModal(){ modalBackdrop.classList.remove('show'); }
+    modalClose.addEventListener('click', closeModal);
+    modalBackdrop.addEventListener('click', (e)=> { if(e.target === modalBackdrop) closeModal(); });
+
+    modalAction.addEventListener('click', ()=>{
+      modalAction.disabled = true;
+      modalAction.innerText = '⏳ Menjalankan...';
+      modalResult.style.display = 'none';
+      setTimeout(()=> {
+        modalAction.innerText = 'Jalankan';
+        modalAction.disabled = false;
+        modalResult.style.display = 'block';
+        // contoh variasi hasil simulasi
+        modalResult.innerText = 'Hasil simulasi: operasi berhasil (kode: OK-0x' + Math.floor(Math.random()*9000+1000) + '). Ini hanya demo antarmuka, tidak melakukan aksi ke WhatsApp.';
+      }, 900);
+    });
+
+    // search & filter
+    searchInput.addEventListener('input', (e)=>{
+      const q = e.target.value.trim().toLowerCase();
+      if(!q) return renderMenu(MENU_ITEMS);
+      renderMenu(MENU_ITEMS.filter(i => i.title.toLowerCase().includes(q) || i.meta.toLowerCase().includes(q) || i.tag.toLowerCase().includes(q)));
+    });
+
+    // pill filters
+    document.querySelectorAll('.pill').forEach(p=>{
+      p.addEventListener('click', ()=>{
+        const f = p.dataset.filter;
+        document.querySelectorAll('.pill').forEach(x=> x.style.opacity = '0.9');
+        p.style.opacity = '1';
+        if(f === 'all') renderMenu(MENU_ITEMS);
+        else renderMenu(MENU_ITEMS.filter(i => i.tag === f));
+      });
+    });
+
+    // login behavior (client-side demo)
+    form.addEventListener('submit', (ev)=>{
+      const u = usernameInput.value.trim();
+      const p = passwordInput.value.trim();
+
+      loginBtn.disabled = true;
+      loginBtn.style.opacity = '0.7';
+      loginBtn.innerHTML = '⏳ LOADING';
+
+      setTimeout(()=> {
+        loginBtn.disabled = false;
+        loginBtn.innerHTML = '<span class="skull">☠</span><span style="letter-spacing:10px">LOGIN</span><span class="skull">☠</span>';
+        loginBtn.style.opacity = '1';
+
+        const ok = (u === VALID_CRED.username && p === VALID_CRED.password);
+        if(ok){
+          // tampilan transisi
+          loginCard.style.transition = 'opacity .28s ease, transform .28s ease';
+          loginCard.style.opacity = '0';
+          loginCard.style.transform = 'translateY(-20px) scale(.98)';
+          setTimeout(()=> loginCard.style.display = 'none', 300);
+
+          // show panel
+          bugPanel.classList.add('visible');
+          bugPanel.style.opacity = '0';
+          bugPanel.style.transform = 'translateY(10px)';
+          setTimeout(()=> { bugPanel.style.transition = 'all .28s ease'; bugPanel.style.opacity = '1'; bugPanel.style.transform = 'translateY(0)'; }, 40);
+
+          // render menu
+          renderMenu(MENU_ITEMS);
+        } else {
+          alert('Username atau password salah. Coba: username="admin" password="1234" (default demo).');
+        }
+      }, 900);
+    });
+
+    logoutBtn.addEventListener('click', ()=>{
+      // reset UI ke login
+      bugPanel.classList.remove('visible');
+      setTimeout(()=> {
+        loginCard.style.display = 'block';
+        setTimeout(()=> { loginCard.style.opacity = '1'; loginCard.style.transform = 'translateY(0) scale(1)'; }, 40);
+      }, 40);
+      // clear fields
+      usernameInput.value = '';
+      passwordInput.value = '';
+      // close modal if open
+      closeModal();
+    });
+
+    // accessibility: Esc closes modal
+    document.addEventListener('keydown', (e)=> {
+      if(e.key === 'Escape') closeModal();
+    });
+    
